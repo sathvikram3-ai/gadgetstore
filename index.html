@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore - Premium Electronics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background: #1a1a1a;
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            padding: 10px 20px;
+            background: #4CAF50;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .cart-icon:hover {
+            background: #45a049;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4444;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* Product Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0,0,0,0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 80px;
+            color: white;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+        }
+
+        .product-category {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .product-price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #45a049;
+        }
+
+        .btn-secondary {
+            background: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #555;
+        }
+
+        .btn-danger {
+            background: #ff4444;
+        }
+
+        .btn-danger:hover {
+            background: #cc0000;
+        }
+
+        /* Cart Page */
+        .cart-items {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            margin-right: 20px;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .cart-item-price {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .quantity-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .remove-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .remove-btn:hover {
+            background: #cc0000;
+        }
+
+        .cart-summary {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .summary-row.total {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+            padding-top: 15px;
+            border-top: 2px solid #eee;
+            margin-top: 15px;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .empty-cart-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        /* Checkout Form */
+        .checkout-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .checkout-form {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section h3 {
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* Confirmation Page */
+        .confirmation-container {
+            max-width: 800px;
+            margin: 40px auto;
+            text-align: center;
+        }
+
+        .confirmation-card {
+            background: white;
+            border-radius: 10px;
+            padding: 60px 40px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .success-icon {
+            font-size: 80px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .confirmation-card h1 {
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+
+        .order-number {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .order-details {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .order-details h3 {
+            margin-bottom: 20px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .page-title {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+        }
+
+        .breadcrumb {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-container {
+                grid-template-columns: 1fr;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .cart-item-image {
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">🛒 TechStore</div>
+            <div class="cart-icon" onclick="showCart()">
+                <span>Cart</span>
+                <span class="cart-count" id="cartCount">0</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Products Page -->
+    <div id="productsPage" class="page active">
+        <div class="container">
+            <h1 class="page-title">Premium Electronics</h1>
+            <p class="breadcrumb">Home / Products</p>
+            
+            <div class="products-grid" id="productsGrid"></div>
+        </div>
+    </div>
+
+    <!-- Cart Page -->
+    <div id="cartPage" class="page">
+        <div class="container">
+            <h1 class="page-title">Shopping Cart</h1>
+            <p class="breadcrumb">Home / Cart</p>
+            
+            <div id="cartContent"></div>
+        </div>
+    </div>
+
+    <!-- Checkout Page -->
+    <div id="checkoutPage" class="page">
+        <div class="container">
+            <h1 class="page-title">Checkout</h1>
+            <p class="breadcrumb">Home / Cart / Checkout</p>
+            
+            <div class="checkout-container">
+                <div class="checkout-form">
+                    <form id="checkoutForm">
+                        <div class="form-section">
+                            <h3>Contact Information</h3>
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" id="email" required placeholder="john@example.com">
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Shipping Address</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>First Name</label>
+                                    <input type="text" id="firstName" required placeholder="John">
+                                </div>
+                                <div class="form-group">
+                                    <label>Last Name</label>
+                                    <input type="text" id="lastName" required placeholder="Doe">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Address</label>
+                                <input type="text" id="address" required placeholder="123 Main Street">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>City</label>
+                                    <input type="text" id="city" required placeholder="New York">
+                                </div>
+                                <div class="form-group">
+                                    <label>ZIP Code</label>
+                                    <input type="text" id="zip" required placeholder="10001">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Country</label>
+                                <select id="country" required>
+                                    <option value="">Select Country</option>
+                                    <option value="US">United States</option>
+                                    <option value="CA">Canada</option>
+                                    <option value="UK">United Kingdom</option>
+                                    <option value="AU">Australia</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Payment Method</h3>
+                            <div class="form-group">
+                                <label>Card Number</label>
+                                <input type="text" id="cardNumber" required placeholder="4242 4242 4242 4242">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Expiry Date</label>
+                                    <input type="text" id="expiry" required placeholder="MM/YY">
+                                </div>
+                                <div class="form-group">
+                                    <label>CVV</label>
+                                    <input type="text" id="cvv" required placeholder="123">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn">Complete Purchase</button>
+                    </form>
+                </div>
+
+                <div>
+                    <div class="cart-summary" id="checkoutSummary"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Page -->
+    <div id="confirmationPage" class="page">
+        <div class="container">
+            <div class="confirmation-container">
+                <div class="confirmation-card">
+                    <div class="success-icon">✓</div>
+                    <h1>Order Confirmed!</h1>
+                    <p class="order-number">Order #<span id="orderNumber"></span></p>
+                    <p style="color: #666; margin-bottom: 30px;">
+                        Thank you for your purchase! A confirmation email has been sent to your email address.
+                    </p>
+
+                    <div class="order-details">
+                        <h3>Order Summary</h3>
+                        <div id="orderItemsList"></div>
+                        <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #ddd;">
+                            <div class="summary-row">
+                                <span>Subtotal:</span>
+                                <span id="confirmSubtotal">$0.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Tax (10%):</span>
+                                <span id="confirmTax">$0.00</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Shipping:</span>
+                                <span id="confirmShipping">$0.00</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total:</span>
+                                <span id="confirmTotal">$0.00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="order-details" style="text-align: left;">
+                        <h3>Shipping Information</h3>
+                        <div id="shippingInfo"></div>
+                    </div>
+
+                    <button class="btn" onclick="showThankYou()">Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thank You Page -->
+    <div id="thankYouPage" class="page">
+        <div class="container">
+            <div class="confirmation-container">
+                <div class="confirmation-card">
+                    <div class="success-icon">🎉</div>
+                    <h1>Thank You for Your Order!</h1>
+                    <p style="color: #666; font-size: 18px; margin: 20px 0;">
+                        We appreciate your business and trust in TechStore.
+                    </p>
+                    
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 10px; padding: 30px; margin: 30px 0;">
+                        <h2 style="margin-bottom: 15px; color: white;">What's Next?</h2>
+                        <p style="margin-bottom: 10px;">✉️ You'll receive a confirmation email shortly</p>
+                        <p style="margin-bottom: 10px;">📦 Your order will be processed within 24 hours</p>
+                        <p style="margin-bottom: 10px;">🚚 Estimated delivery: 3-5 business days</p>
+                        <p>📱 Track your order anytime in your account</p>
+                    </div>
+
+                    <div class="order-details" style="text-align: center;">
+                        <h3>Your Order Number</h3>
+                        <p style="font-size: 24px; font-weight: bold; color: #4CAF50; margin-top: 10px;">
+                            <span id="thankYouOrderNumber"></span>
+                        </p>
+                        <p style="color: #666; margin-top: 10px;">Save this number for your records</p>
+                    </div>
+
+                    <div style="margin-top: 30px;">
+                        <p style="color: #666; margin-bottom: 20px;">
+                            Need help? Contact us at <strong>support@techstore.com</strong> or call <strong>1-800-TECH-STORE</strong>
+                        </p>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-top: 30px;">
+                        <button class="btn" onclick="continueShopping()" style="flex: 1;">Continue Shopping</button>
+                        <button class="btn btn-secondary" onclick="viewOrderDetails()" style="flex: 1;">View Order Details</button>
+                    </div>
+
+                    <div style="margin-top: 40px; padding-top: 30px; border-top: 1px solid #eee;">
+                        <h3 style="margin-bottom: 20px;">You Might Also Like</h3>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                            <div style="padding: 15px; background: #f9f9f9; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 40px; margin-bottom: 10px;">🔋</div>
+                                <div style="font-size: 14px; font-weight: 600;">Power Bank</div>
+                                <div style="font-size: 16px; color: #4CAF50; margin-top: 5px;">$49.99</div>
+                            </div>
+                            <div style="padding: 15px; background: #f9f9f9; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 40px; margin-bottom: 10px;">🎮</div>
+                                <div style="font-size: 14px; font-weight: 600;">Gaming Controller</div>
+                                <div style="font-size: 16px; color: #4CAF50; margin-top: 5px;">$69.99</div>
+                            </div>
+                            <div style="padding: 15px; background: #f9f9f9; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 40px; margin-bottom: 10px;">📱</div>
+                                <div style="font-size: 14px; font-weight: 600;">Phone Case</div>
+                                <div style="font-size: 16px; color: #4CAF50; margin-top: 5px;">$29.99</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Product Data
+        const products = [
+            { id: 'prod_001', name: 'Premium Wireless Headphones', category: 'Audio', price: 299.99, icon: '🎧' },
+            { id: 'prod_002', name: 'Smart Watch Pro', category: 'Wearables', price: 399.99, icon: '⌚' },
+            { id: 'prod_003', name: 'Ultra HD Webcam', category: 'Accessories', price: 149.99, icon: '📷' },
+            { id: 'prod_004', name: 'Mechanical Keyboard', category: 'Peripherals', price: 179.99, icon: '⌨️' },
+            { id: 'prod_005', name: 'Gaming Mouse RGB', category: 'Peripherals', price: 89.99, icon: '🖱️' },
+            { id: 'prod_006', name: 'Portable SSD 1TB', category: 'Storage', price: 199.99, icon: '💾' },
+            { id: 'prod_007', name: 'USB-C Hub', category: 'Accessories', price: 79.99, icon: '🔌' },
+            { id: 'prod_008', name: 'Laptop Stand', category: 'Accessories', price: 59.99, icon: '💻' },
+        ];
+
+        // Cart State
+        let cart = [];
+        let orderData = {};
+
+        // Initialize
+        function init() {
+            renderProducts();
+            updateCartCount();
+        }
+
+        // Render Products
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = products.map(product => `
+                <div class="product-card">
+                    <div class="product-image">${product.icon}</div>
+                    <div class="product-info">
+                        <div class="product-category">${product.category}</div>
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-price">$${product.price.toFixed(2)}</div>
+                        <button class="btn" onclick="addToCart('${product.id}')">Add to Cart</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Add to Cart
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+
+            updateCartCount();
+            
+            // GTM Event - Add to Cart
+            console.log('GTM Event: add_to_cart', {
+                currency: 'USD',
+                value: product.price,
+                items: [{
+                    item_id: product.id,
+                    item_name: product.name,
+                    item_category: product.category,
+                    price: product.price,
+                    quantity: 1
+                }]
+            });
+
+            alert(`${product.name} added to cart!`);
+        }
+
+        // Update Cart Count
+        function updateCartCount() {
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cartCount').textContent = count;
+        }
+
+        // Show Cart
+        function showCart() {
+            showPage('cartPage');
+            renderCart();
+        }
+
+        // Render Cart
+        function renderCart() {
+            const container = document.getElementById('cartContent');
+            
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">🛒</div>
+                        <h2>Your cart is empty</h2>
+                        <p style="color: #666; margin: 20px 0;">Add some products to get started!</p>
+                        <button class="btn" onclick="showPage('productsPage')">Continue Shopping</button>
+                    </div>
+                `;
+                return;
+            }
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tax = subtotal * 0.1;
+            const shipping = 15.00;
+            const total = subtotal + tax + shipping;
+
+            container.innerHTML = `
+                <div class="cart-items">
+                    ${cart.map((item, index) => `
+                        <div class="cart-item">
+                            <div class="cart-item-image">${item.icon}</div>
+                            <div class="cart-item-info">
+                                <div class="cart-item-name">${item.name}</div>
+                                <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+                                <div class="cart-item-quantity">
+                                    <button class="quantity-btn" onclick="updateQuantity(${index}, -1)">-</button>
+                                    <span>${item.quantity}</span>
+                                    <button class="quantity-btn" onclick="updateQuantity(${index}, 1)">+</button>
+                                </div>
+                            </div>
+                            <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="cart-summary">
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span>$${subtotal.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax (10%):</span>
+                        <span>$${tax.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping:</span>
+                        <span>$${shipping.toFixed(2)}</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total:</span>
+                        <span>$${total.toFixed(2)}</span>
+                    </div>
+                    <button class="btn" onclick="proceedToCheckout()" style="margin-top: 20px;">Proceed to Checkout</button>
+                    <button class="btn btn-secondary" onclick="showPage('productsPage')" style="margin-top: 10px;">Continue Shopping</button>
+                </div>
+            `;
+        }
+
+        // Update Quantity
+        function updateQuantity(index, change) {
+            cart[index].quantity += change;
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartCount();
+            renderCart();
+        }
+
+        // Remove from Cart
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartCount();
+            renderCart();
+        }
+
+        // Proceed to Checkout
+        function proceedToCheckout() {
+            showPage('checkoutPage');
+            renderCheckoutSummary();
+
+            // GTM Event - Begin Checkout
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            console.log('GTM Event: begin_checkout', {
+                currency: 'USD',
+                value: subtotal,
+                items: cart.map(item => ({
+                    item_id: item.id,
+                    item_name: item.name,
+                    item_category: item.category,
+                    price: item.price,
+                    quantity: item.quantity
+                }))
+            });
+        }
+
+        // Render Checkout Summary
+        function renderCheckoutSummary() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tax = subtotal * 0.1;
+            const shipping = 15.00;
+            const total = subtotal + tax + shipping;
+
+            document.getElementById('checkoutSummary').innerHTML = `
+                <h3 style="margin-bottom: 20px;">Order Summary</h3>
+                ${cart.map(item => `
+                    <div class="summary-row" style="font-size: 14px; margin-bottom: 10px;">
+                        <span>${item.name} x ${item.quantity}</span>
+                        <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                `).join('')}
+                <div class="summary-row" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+                    <span>Subtotal:</span>
+                    <span>$${subtotal.toFixed(2)}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Tax (10%):</span>
+                    <span>$${tax.toFixed(2)}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping:</span>
+                    <span>$${shipping.toFixed(2)}</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total:</span>
+                    <span>$${total.toFixed(2)}</span>
+                </div>
+            `;
+        }
+
+        // Handle Checkout Form Submission
+        document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tax = subtotal * 0.1;
+            const shipping = 15.00;
+            const total = subtotal + tax + shipping;
+
+            // Generate Order Number
+            const orderNumber = 'ORD-' + Date.now();
+
+            // Store Order Data
+            orderData = {
+                orderNumber: orderNumber,
+                items: [...cart],
+                subtotal: subtotal,
+                tax: tax,
+                shipping: shipping,
+                total: total,
+                customer: {
+                    email: document.getElementById('email').value,
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    address: document.getElementById('address').value,
+                    city: document.getElementById('city').value,
+                    zip: document.getElementById('zip').value,
+                    country: document.getElementById('country').value
+                }
+            };
+
+            // GTM Event - Purchase
+            console.log('GTM Event: purchase', {
+                transaction_id: orderNumber,
+                currency: 'USD',
+                value: total,
+                tax: tax,
+                shipping: shipping,
+                items: cart.map(item => ({
+                    item_id: item.id,
+                    item_name: item.name,
+                    item_category: item.category,
+                    price: item.price,
+                    quantity: item.quantity
+                }))
+            });
+
+            // Show Confirmation Page
+            showConfirmation();
+
+            // Clear Cart
+            cart = [];
+            updateCartCount();
+        });
+
+        // Show Confirmation
+        function showConfirmation() {
+            showPage('confirmationPage');
+
+            document.getElementById('orderNumber').textContent = orderData.orderNumber;
+
+            document.getElementById('orderItemsList').innerHTML = orderData.items.map(item => `
+                <div class="order-item">
+                    <div>
+                        <strong>${item.name}</strong>
+                        <div style="color: #666; font-size: 14px;">Quantity: ${item.quantity}</div>
+                    </div>
+                    <div><strong>$${(item.price * item.quantity).toFixed(2)}</strong></div>
+                </div>
+            `).join('');
+
+            document.getElementById('confirmSubtotal').textContent = '$' + orderData.subtotal.toFixed(2);
+            document.getElementById('confirmTax').textContent = '$' + orderData.tax.toFixed(2);
+            document.getElementById('confirmShipping').textContent = '$' + orderData.shipping.toFixed(2);
+            document.getElementById('confirmTotal').textContent = '$' + orderData.total.toFixed(2);
+
+            document.getElementById('shippingInfo').innerHTML = `
+                <p><strong>${orderData.customer.firstName} ${orderData.customer.lastName}</strong></p>
+                <p>${orderData.customer.address}</p>
+                <p>${orderData.customer.city}, ${orderData.customer.zip}</p>
+                <p>${orderData.customer.country}</p>
+                <p style="margin-top: 15px;"><strong>Email:</strong> ${orderData.customer.email}</p>
+            `;
+        }
+
+        // Continue Shopping
+        function continueShopping() {
+            showPage('productsPage');
+        }
+
+        // Show Page
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // Initialize on Load
+        init();
+    </script>
+</body>
+</html>
